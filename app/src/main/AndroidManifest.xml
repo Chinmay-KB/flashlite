@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?><manifest xmlns:android="http://schemas.android.com/apk/res/android" package="flashkreig.kablitzkreig.flashlite">
+<permission android:name="android.permission.CAMERA"/>
+<uses-permission android:name="android.permission.CAMERA"/>
+<application android:icon="@mipmap/t" android:label="Flashlite">
+    <activity android:name="flashkreig.kablitzkreig.flashlite.a">
+        <intent-filter>
+            <action android:name="android.intent.action.MAIN"/>
+            <category android:name="android.intent.category.LAUNCHER"/>
+        </intent-filter>
+    </activity>
+    <service android:name="flashkreig.kablitzkreig.flashlite.b"/>
+</application>
+</manifest>
