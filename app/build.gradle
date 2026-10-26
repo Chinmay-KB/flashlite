@@ -1,24 +1,93 @@
-apply plugin: 'com.android.application'
+plugins {
+    id 'com.android.application'
+}
+
+def keystoreProps = null
+def ksPropsPath = project.findProperty('FLASHLITE_KEYSTORE_PROPERTIES') ?: System.getenv('FLASHLITE_KEYSTORE_PROPERTIES')
+if (ksPropsPath != null) {
+    def f = file(ksPropsPath)
+    if (f.exists()) {
+        keystoreProps = new Properties()
+        f.withInputStream { keystoreProps.load(it) }
+    }
+}
+
+def value = { String name ->
+    project.findProperty(name) ?: System.getenv(name) ?: keystoreProps?.getProperty(name)
+}
+
+def flKsPath = value('FLASHLITE_KEYSTORE')
+def flKsPass = value('FLASHLITE_KEYSTORE_PASSWORD')
+def flKeyAlias = value('FLASHLITE_KEY_ALIAS')
+def flKeyPass = value('FLASHLITE_KEY_PASSWORD')
 
 android {
-    compileSdkVersion 26
+    namespace 'flashkreig.kablitzkreig.flashlite'
+    compileSdk 36
+
     defaultConfig {
-        applicationId "flashkreig.kablitzkreig.flashlite"
-        minSdkVersion 23
-        targetSdkVersion 26
-        versionCode 1
-        resConfigs "en"
-        versionName "1.0"
+        applicationId 'flashkreig.kablitzkreig.flashlite'
+        minSdk 24
+        targetSdk 36
+        versionCode 2
+        versionName '1.1'
+        resConfigs 'en'
     }
+
+    buildFeatures {
+        buildConfig false
+        aidl false
+        renderScript false
+        resValues false
+        shaders false
+    }
+
+    dependenciesInfo {
+        includeInApk = false
+        includeInBundle = false
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    signingConfigs {
+        if (flKsPath != null) {
+            release {
+                storeFile = file(flKsPath)
+                storePassword = flKsPass
+                keyAlias = flKeyAlias
+                keyPassword = flKeyPass
+            }
+        }
+    }
+
     buildTypes {
         release {
-            shrinkResources true
             minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            vcsInfo {
+                include false
+            }
+            if (flKsPath != null) {
+                signingConfig signingConfigs.release
+            }
+        }
+    }
+
+    packaging {
+        resources {
+            excludes += ['META-INF/**', 'kotlin/**', '**/*.kotlin_*', 'DebugProbesKt.bin']
         }
     }
 }
 
-dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+tasks.configureEach {
+    if (name.startsWith('write') && name.endsWith('AppMetadata')) {
+        doLast {
+            it.outputFile.get().asFile.write('')
+        }
+    }
 }
