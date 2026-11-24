@@ -34,6 +34,10 @@ android {
         resConfigs 'en'
     }
 
+    androidResources {
+        additionalParameters '--no-compile-sdk-metadata'
+    }
+
     buildFeatures {
         buildConfig false
         aidl false
