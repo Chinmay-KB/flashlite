@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
-    <application android:icon="@mipmap/t" android:label="Flashlite" android:theme="@android:style/Theme.NoDisplay">
-        <activity android:name="a.a" android:exported="true" android:excludeFromRecents="true">
+    <application android:icon="@android:drawable/ic_lock_power_off" android:label="Flashlite" android:theme="@android:style/Theme.NoDisplay">
+        <activity android:name="a.a" android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
